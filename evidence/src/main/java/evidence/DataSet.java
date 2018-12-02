@@ -10,13 +10,13 @@ import java.util.stream.Collectors;
 public class DataSet{
 
     String _path;
-    private List<Triple<String, String, Integer>> _attributes;
+    private List<AttributeValue> _attributes;
     private Map<String, List<Float>> _basicMasses = new HashMap<String, List<Float>>();
 
     private Map<String, Integer> _bookLookUp; 
 
     public DataSet(String sourcePath){
-        _attributes = new ArrayList<Triple<String, String, Integer>>();
+        _attributes = new ArrayList<AttributeValue>();
         _basicMasses = new HashMap<String, List<Float>>();
         _path = sourcePath;
         _bookLookUp = new HashMap<String, Integer>();
@@ -41,11 +41,11 @@ public class DataSet{
             }
             reader.close();
 
-            List<Triple<String, String, Integer>> filteredAttributes = _attributes.stream().filter(x -> (!x.y.equals("Nr"))).collect(Collectors.toList());
+            List<AttributeValue> filteredAttributes = _attributes.stream().filter(x -> (!x.attributeName.equals("Nr"))).collect(Collectors.toList());
 
-            for (Triple<String, String, Integer> attribute : filteredAttributes) {
-                if(_basicMasses.get(attribute.x) == null){
-                    _basicMasses.put(attribute.x, CalculateSingleBasicMass(attribute.x));
+            for (AttributeValue attributeValue : filteredAttributes) {
+                if(_basicMasses.get(attributeValue.value) == null){
+                    _basicMasses.put(attributeValue.value, CalculateSingleBasicMass(attributeValue.value));
                 }
             }
             
@@ -57,9 +57,9 @@ public class DataSet{
     private List<Float> CalculateSingleBasicMass(String attributeName){
         List<Float> basicMasses = new ArrayList<Float>();
 
-        Integer numberOfAttributeOccurenceBookA = (int) _attributes.stream().filter(x -> (x.x == attributeName && x.z == _bookLookUp.get("Buch_A"))).count();
-        Integer numberOfAttributeOccurenceBookB = (int) _attributes.stream().filter(x -> (x.x == attributeName && x.z == _bookLookUp.get("Buch_B"))).count();
-        Integer numberOfAttributeOccurenceBookC = (int) _attributes.stream().filter(x -> (x.x == attributeName && x.z == _bookLookUp.get("Buch_C"))).count();
+        Integer numberOfAttributeOccurenceBookA = (int) _attributes.stream().filter(x -> (x.value == attributeName && x.bookCode == _bookLookUp.get("Buch_A"))).count();
+        Integer numberOfAttributeOccurenceBookB = (int) _attributes.stream().filter(x -> (x.value == attributeName && x.bookCode == _bookLookUp.get("Buch_B"))).count();
+        Integer numberOfAttributeOccurenceBookC = (int) _attributes.stream().filter(x -> (x.value == attributeName && x.bookCode == _bookLookUp.get("Buch_C"))).count();
 
         Integer numberOfTotalOccurences = numberOfAttributeOccurenceBookA+numberOfAttributeOccurenceBookB+numberOfAttributeOccurenceBookC;
 
@@ -73,7 +73,7 @@ public class DataSet{
     private void AddPersonsAttributes(String personCsv, String[] header){
         String[] attributes = personCsv.split(";");
         for(int i=0; i<8; i++){
-            _attributes.add( new Triple<String, String, Integer>(attributes[i], header[i], _bookLookUp.get(attributes[8])));
+            _attributes.add( new AttributeValue(attributes[i], header[i], _bookLookUp.get(attributes[8])));
         }
     }
 }
