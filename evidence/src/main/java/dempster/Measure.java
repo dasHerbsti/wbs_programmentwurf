@@ -84,7 +84,8 @@ public class Measure{
 				}
 			}
 		}
-		return belief;
+        return belief;
+        
 	}
 	
 	/**

@@ -11,26 +11,47 @@ public class App
     {
         DempsterHandler dempsterHandler = new DempsterHandler(3);
         
+        DataSet dataSet = new DataSet("C:\\Users\\carin\\DHBW\\Semester_5\\WBS\\programmentwurf\\E001.csv");
+
+        //// Merkmal: Alter <18 
+        //Measure m1 = dempsterHandler.addMeasure();
+        //m1.addEntry(Arrays.asList(new Integer[] {1 ,0 , 0}) , 0.102272727272f);
+        //m1.addEntry(Arrays.asList(new Integer[] {0 ,1 , 0}) , 0.011363636363f);
+        //m1.addEntry(Arrays.asList(new Integer[] {0 ,0 , 1}) , 0.136363636363f);
+        //System.out.println("First measure: \n" + m1.toString());
+        //
+        //// Merkmal: Kinderanzahl 1
+        //Measure m2 = dempsterHandler.addMeasure();
+        //m2.addEntry(Arrays.asList(new Integer[] {0, 1, 0}) , 0.125f);
+        //m2.addEntry(Arrays.asList(new Integer[] {0 ,0, 1}) , 0.125f);
+        //System.out.println("Second measure: \n" + m2.toString());
+
+        ////Merkmal: Geschlecht m
+        //Measure m3 = dempsterHandler.addMeasure();
+        //m3.addEntry(Arrays.asList(new Integer[] {1 ,0 , 0}) , 0.0669642857142857f);
+        //m3.addEntry(Arrays.asList(new Integer[] {0 ,1 , 0}) , 0.0892857142857143f);
+        //m3.addEntry(Arrays.asList(new Integer[] {0 ,0 , 1}) , 0.09375f);
+        //System.out.println("First measure: \n" + m3.toString());
 
         // Merkmal: Alter <18 
         Measure m1 = dempsterHandler.addMeasure();
-        m1.addEntry(Arrays.asList(new Integer[] {1 ,0 , 0}) , 0.102272727272f);
-        m1.addEntry(Arrays.asList(new Integer[] {0 ,1 , 0}) , 0.011363636363f);
-        m1.addEntry(Arrays.asList(new Integer[] {0 ,0 , 1}) , 0.136363636363f);
+        m1.addEntry(Arrays.asList(new Integer[] {1 ,0 , 0}) , (9.0/22));
+        m1.addEntry(Arrays.asList(new Integer[] {0 ,1 , 0}) , (1.0/22));
+        m1.addEntry(Arrays.asList(new Integer[] {0 ,0 , 1}) , (12.0/22));
         System.out.println("First measure: \n" + m1.toString());
         
         // Merkmal: Kinderanzahl 1
         Measure m2 = dempsterHandler.addMeasure();
-        m2.addEntry(Arrays.asList(new Integer[] {0, 1, 0}) , 0.125f);
-        m2.addEntry(Arrays.asList(new Integer[] {0 ,0, 1}) , 0.125f);
+        m2.addEntry(Arrays.asList(new Integer[] {0, 1, 0}) , 0.5f);
+        m2.addEntry(Arrays.asList(new Integer[] {0 ,0, 1}) , 0.5f);
         System.out.println("Second measure: \n" + m2.toString());
 
         //Merkmal: Geschlecht m
         Measure m3 = dempsterHandler.addMeasure();
-        m3.addEntry(Arrays.asList(new Integer[] {1 ,0 , 0}) , 0.0669642857142857f);
-        m3.addEntry(Arrays.asList(new Integer[] {0 ,1 , 0}) , 0.0892857142857143f);
-        m3.addEntry(Arrays.asList(new Integer[] {0 ,0 , 1}) , 0.09375f);
-        System.out.println("First measure: \n" + m3.toString());
+        m3.addEntry(Arrays.asList(new Integer[] {1 ,0 , 0}) , (15.0/56));
+        m3.addEntry(Arrays.asList(new Integer[] {0 ,1 , 0}) , (20.0/56));
+        m3.addEntry(Arrays.asList(new Integer[] {0 ,0 , 1}) , (21.0/56));
+        System.out.println("Third measure: \n" + m3.toString());
             
         dempsterHandler.accumulateAllMeasures();
         System.out.println("Accumulated measures result in: \n" + dempsterHandler.getFirstMeasure().toString());
