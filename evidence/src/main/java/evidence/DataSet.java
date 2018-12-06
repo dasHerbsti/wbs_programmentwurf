@@ -8,16 +8,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
  
 public class DataSet{
-
-    String _path;
+    private String _path;
     private List<AttributeValue> _attributes;
-    private Map<String, List<Float>> _basicMasses = new HashMap<String, List<Float>>();
-
+    private Map<String, List<Double>> _basicMasses = new HashMap<String, List<Double>>();
     private Map<String, Integer> _bookLookUp; 
 
     public DataSet(String sourcePath){
         _attributes = new ArrayList<AttributeValue>();
-        _basicMasses = new HashMap<String, List<Float>>();
+        _basicMasses = new HashMap<String, List<Double>>();
         _path = sourcePath;
         _bookLookUp = new HashMap<String, Integer>();
 
@@ -26,6 +24,15 @@ public class DataSet{
         _bookLookUp.put("Buch_C", 2);
 
         CalculateBasicMasses();
+    }
+
+    public List<Double> getBasicMassToAttribute(String attributeValue){
+        if(_basicMasses.containsKey(attributeValue)){
+            return _basicMasses.get(attributeValue);            
+        }
+        else{
+            return new ArrayList<Double>() {{add(0d); add(0d); add(0d); }};
+        }
     }
 
     private void CalculateBasicMasses(){
@@ -41,11 +48,11 @@ public class DataSet{
             }
             reader.close();
 
-            List<AttributeValue> filteredAttributes = _attributes.stream().filter(x -> (!x.attributeName.equals("Nr"))).collect(Collectors.toList());
+            List<AttributeValue> filteredAttributes = _attributes.stream().filter(x -> (!x.getAttributeName().equals("Nr"))).collect(Collectors.toList());
 
             for (AttributeValue attributeValue : filteredAttributes) {
-                if(_basicMasses.get(attributeValue.value) == null){
-                    _basicMasses.put(attributeValue.value, CalculateSingleBasicMass(attributeValue.value));
+                if(_basicMasses.get(attributeValue.getValue()) == null){
+                    _basicMasses.put(attributeValue.getValue(), CalculateSingleBasicMass(attributeValue.getValue()));
                 }
             }
             
@@ -54,18 +61,18 @@ public class DataSet{
         }        
     }
 
-    private List<Float> CalculateSingleBasicMass(String attributeName){
-        List<Float> basicMasses = new ArrayList<Float>();
+    private List<Double> CalculateSingleBasicMass(String attributeName){
+        List<Double> basicMasses = new ArrayList<Double>();
 
-        Integer numberOfAttributeOccurenceBookA = (int) _attributes.stream().filter(x -> (x.value == attributeName && x.bookCode == _bookLookUp.get("Buch_A"))).count();
-        Integer numberOfAttributeOccurenceBookB = (int) _attributes.stream().filter(x -> (x.value == attributeName && x.bookCode == _bookLookUp.get("Buch_B"))).count();
-        Integer numberOfAttributeOccurenceBookC = (int) _attributes.stream().filter(x -> (x.value == attributeName && x.bookCode == _bookLookUp.get("Buch_C"))).count();
+        Integer numberOfAttributeOccurenceBookA = (int) _attributes.stream().filter(x -> (x.getValue().equals(attributeName) && x.getBookCode().equals(_bookLookUp.get("Buch_A")))).count();
+        Integer numberOfAttributeOccurenceBookB = (int) _attributes.stream().filter(x -> (x.getValue().equals(attributeName) && x.getBookCode().equals(_bookLookUp.get("Buch_B")))).count();
+        Integer numberOfAttributeOccurenceBookC = (int) _attributes.stream().filter(x -> (x.getValue().equals(attributeName) && x.getBookCode().equals(_bookLookUp.get("Buch_C")))).count();
 
         Integer numberOfTotalOccurences = numberOfAttributeOccurenceBookA+numberOfAttributeOccurenceBookB+numberOfAttributeOccurenceBookC;
 
-        basicMasses.add((float)(numberOfAttributeOccurenceBookA/(4*numberOfTotalOccurences)));
-        basicMasses.add((float)(numberOfAttributeOccurenceBookB/(4*numberOfTotalOccurences)));
-        basicMasses.add((float)(numberOfAttributeOccurenceBookC/(4*numberOfTotalOccurences)));
+        basicMasses.add(((double)numberOfAttributeOccurenceBookA/(4*numberOfTotalOccurences)));
+        basicMasses.add(((double)numberOfAttributeOccurenceBookB/(4*numberOfTotalOccurences)));
+        basicMasses.add(((double)numberOfAttributeOccurenceBookC/(4*numberOfTotalOccurences)));
 
         return basicMasses;
     }

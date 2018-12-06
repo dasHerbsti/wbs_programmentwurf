@@ -49,8 +49,7 @@ public class DempsterHandler{
 			//accumulate measures, add to list
 			this.measures.add(this.accumulateMeasures(measure1, measure2));
 			this.accumulateAllMeasures();
-		}
-		
+		}		
 	}
 	
 	/**
