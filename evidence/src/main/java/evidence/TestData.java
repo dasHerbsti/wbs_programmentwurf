@@ -41,11 +41,11 @@ public class TestData{
             reader = new BufferedReader(new FileReader(new File(evaluationDataFile)));
 
             // skip header line
-            _header = reader.readLine().split(";");
+            _csvTableHeader = reader.readLine().split(";");
     
             String person;
             while((person = reader.readLine())!=null){
-                AddPerson(person, _header);
+                AddPerson(person, _csvTableHeader);
             }
             reader.close();
         } catch (Exception e) {            
@@ -54,7 +54,7 @@ public class TestData{
     }
 
     public static String[] getHeader(){
-        return _header;
+        return _csvTableHeader;
     }
 
     public void evaluate(){
@@ -90,7 +90,7 @@ public class TestData{
     private void saveResult(){
         try{
             List<String> lines = new ArrayList<String>();
-            lines.add(String.join(";", _header)+";Buch;Belief;Plausibility;Zweifel");
+            lines.add(String.join(";", _csvTableHeader)+";Buch;Belief;Plausibility;Zweifel");
             for (Person person : _evaluationData) {
                 lines.add(person.getCSVString());
             }
