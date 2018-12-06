@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 public class Person {
     private final String SEMICOLON = ";";
-    private final String COLUMNNAMENUMBER = "Nr"; 
+    private final String COLUMN_NAME_NUMBER = "Nr"; 
 
     private Map<String, AttributeValue> _attributes;
     private int _number;
@@ -20,8 +20,13 @@ public class Person {
         _attributes = new HashMap<String, AttributeValue>();
     }
 
+    /**
+     * Adds an attribute to the persons attribute collection if does not already contain a value for that attribute. 
+     * @param attributeName
+     * @param attributeValue
+     */
     public void addAttribute(String attributeName, String attributeValue){
-        if(attributeName.equals(COLUMNNAMENUMBER)){
+        if(attributeName.equals(COLUMN_NAME_NUMBER)){
             _number = new Integer(attributeValue);
         }
         else if(!_attributes.containsKey(attributeName)){
@@ -60,6 +65,10 @@ public class Person {
         return _doubt;
     }
 
+    /**
+     * Converts a person to a csv string.
+     * @return
+     */
     public String getCSVString(){
         StringBuilder sb = new StringBuilder();
         sb.append(_number);
@@ -68,7 +77,7 @@ public class Person {
             if(_attributes.containsKey(column)){
                 sb.append(_attributes.get(column).getValue());
             }
-            if(!column.equals(COLUMNNAMENUMBER)){
+            if(!column.equals(COLUMN_NAME_NUMBER)){
                 sb.append(SEMICOLON);
             }
         }

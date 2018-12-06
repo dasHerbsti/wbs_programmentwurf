@@ -8,15 +8,29 @@ import java.util.Map;
 import java.util.stream.Collectors;
  
 public class DataSet{
+    // path of the knowledge base file
     private String _path;
+
+    // list of all attribute values
     private List<AttributeValue> _attributes;
+
+    // collection of the calculated basic masses for each attribute characteristic
     private Map<String, List<Double>> _basicMasses = new HashMap<String, List<Double>>();
+
+    // look up for the book names 
     private Map<String, Integer> _BookNameToIndex;
+
+    // count of persons
     private int _numberOfTotalPersons;
+    // count of persons with book A
     private int _numberOfPersonsWithBookA;
+    // count of persons with book B
     private int _numberOfPersonsWithBookB;
+    // count of persons with book C
     private int _numberOfPersonsWithBookC;
 
+    
+    
     public DataSet(String sourcePath){
         _attributes = new ArrayList<AttributeValue>();
         _basicMasses = new HashMap<String, List<Double>>();
@@ -30,6 +44,11 @@ public class DataSet{
         CalculateBasicMasses();
     }
 
+    /**
+	* Gets the basic masses for each book for the given attribute value 
+	* @param attributeValue the value of the attribute for which the basic masses are requested
+	* @return a list with the basic mass values for each book 
+	*/
     public List<Double> getBasicMassToAttribute(String attributeValue){
         if(_basicMasses.containsKey(attributeValue)){
             return _basicMasses.get(attributeValue);            
@@ -39,6 +58,9 @@ public class DataSet{
         }
     }
 
+    /**
+     * Calculates the basic masses from the data source file
+     */
     private void CalculateBasicMasses(){
         try {
             BufferedReader reader = new BufferedReader(new FileReader(new File(_path)));
@@ -52,10 +74,13 @@ public class DataSet{
             }
             reader.close();
 
-            
+            // filter Nr fields to get only the characteristics
             List<AttributeValue> filteredAttributes = _attributes.stream().filter(x -> (!x.getAttributeName().equals("Nr"))).collect(Collectors.toList());
             
+            // count persons and occurences of each book
             CalculateTotalDistributionValues(filteredAttributes);
+            
+            // calculate basic mass for each attribute characteristic
             for (AttributeValue attributeValue : filteredAttributes) {
                 if(_basicMasses.get(attributeValue.getValue()) == null){
                     _basicMasses.put(attributeValue.getValue(), CalculateSingleBasicMass(attributeValue.getValue()));
@@ -67,6 +92,10 @@ public class DataSet{
         }        
     }
 
+    /**
+     * Calculates the values of the distribution of all book on the given person set from the data source
+     * @param attributeValues the {@link AttributeValue}s from the data source
+     */
     private void CalculateTotalDistributionValues(List<AttributeValue> attributeValues){
         _numberOfTotalPersons=(int)attributeValues.stream().map(x->x.getPersonNumber()).distinct().count();
         _numberOfPersonsWithBookA=(int)attributeValues.stream().filter(x->(x.getBookCode() == 0)).map(x->x.getPersonNumber()).distinct().count();
@@ -74,6 +103,11 @@ public class DataSet{
         _numberOfPersonsWithBookC=(int)attributeValues.stream().filter(x->(x.getBookCode() == 2)).map(x->x.getPersonNumber()).distinct().count();
     }
 
+    /**
+     * Calculates the basic masses for a single attribute characteristic
+     * @param attributeName the name of the attribute
+     * @return A list with the basic mass values for book A, book B and book C
+     */
     private List<Double> CalculateSingleBasicMass(String attributeName){
         List<Double> basicMasses = new ArrayList<Double>();       
  
@@ -83,27 +117,39 @@ public class DataSet{
 
         int numberOfTotalOccurences = numberOfAttributeOccurenceBookA+numberOfAttributeOccurenceBookB+numberOfAttributeOccurenceBookC;
 
-        basicMasses.add((((double)numberOfAttributeOccurenceBookA)/(numberOfTotalOccurences*_numberOfPersonsWithBookA)));
-        basicMasses.add((((double)numberOfAttributeOccurenceBookB)/(numberOfTotalOccurences*_numberOfPersonsWithBookB)));
-        basicMasses.add((((double)numberOfAttributeOccurenceBookC)/(numberOfTotalOccurences*_numberOfPersonsWithBookC)));
+        basicMasses.add((((double)numberOfAttributeOccurenceBookA/numberOfTotalOccurences)*(_numberOfTotalPersons/_numberOfPersonsWithBookA)));
+        basicMasses.add((((double)numberOfAttributeOccurenceBookB/numberOfTotalOccurences)*(_numberOfTotalPersons/_numberOfPersonsWithBookB)));
+        basicMasses.add((((double)numberOfAttributeOccurenceBookC/numberOfTotalOccurences)*(_numberOfTotalPersons/_numberOfPersonsWithBookC)));
 
         basicMasses = normalize(basicMasses);
 
         return basicMasses;
     }
 
+    /**
+     * Normalizes the basic mass values in a way that they sum up to 1.
+     * @param basicMasses A List with the basic masses for the books A, B and C
+     * @return A list with the normalized basic masses for the books A, B and C
+     */
     private List<Double> normalize (List<Double> basicMasses){
         List<Double> newBasicMasses = new ArrayList<Double>();
+        // calculate the sum of the basic masses
         double sum = 0.0;
         for (Double basisMass : basicMasses) {
             sum+=basisMass;
         }
+        // calculate the new basic masses by dividing with the sum
         for (Double basisMass : basicMasses) {
             newBasicMasses.add((basisMass/sum));
         }
         return newBasicMasses;
     }
 
+    /**
+     * Parses a persons attributes from a csv line to the attributes collection
+     * @param personCsv the csv string that represents a person
+     * @param header the header of the csv table that gives the attributes names
+     */
     private void AddPersonsAttributes(String personCsv, String[] header){
         String[] attributes = personCsv.split(";");
         for(int i=0; i<8; i++){

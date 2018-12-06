@@ -15,14 +15,19 @@ import dempster.DempsterHandler;
 import dempster.Measure;
  
 public class TestData{    
-
+    // the header of the csv table with the column names (=attribute names)
     private static String[] _csvTableHeader;
 
+    // the list of the person that should be evaluated by the program
     private List<Person> _evaluationData;
+
+    // the knowledge base
     private DataSet _baseDataSet;
 
+    // maps a books index to its name
     private static Map<Integer,String> _bookIndexToName;
 
+    // the path of the results file
     private String _resultFile;
     
     public TestData(String evaluationDataFile, String resultFile, DataSet baseData){
@@ -64,13 +69,11 @@ public class TestData{
 
     /**
 	* Evaluate the test data 
-	* @param measure1 first {@link Measure}
-	* @param measure2 second {@link Measure}
-	* @return resulting {@link Measure}
 	*/
     public void evaluate(){
         for (Person person : _evaluationData) {
             DempsterHandler dempsterHandler = new DempsterHandler(3);
+            // add measures for each known attribute of the test person to the dempster handler
             for (String attributeValue : person.getAttributeValues()){
                 List<Double> basicMasses = _baseDataSet.getBasicMassToAttribute(attributeValue);
                 Measure measure = dempsterHandler.addMeasure();
@@ -86,6 +89,7 @@ public class TestData{
 
                 System.out.println("measure: "+attributeValue+"\n" + measure.toString());
             }
+            
             dempsterHandler.accumulateAllMeasures();   
 
             int indexOfMostLikelyEntry = dempsterHandler.getFirstMeasure().getIndexOfMostLikelyEntry();
@@ -98,12 +102,10 @@ public class TestData{
         }
     }
 
-    	/**
-	 * Accumulates 2 {@link Measure}s, taking conflicts into account
-	 * @param measure1 first {@link Measure}
-	 * @param measure2 second {@link Measure}
-	 * @return resulting {@link Measure}
-	 */
+    /**
+     * Saves the results (persons with attributes and assigned books) to a csv file with the same format than the input file
+     * The path is taken from the field _resultFile
+     */
     private void saveResult(){
         try{
             List<String> lines = new ArrayList<String>();
@@ -120,12 +122,11 @@ public class TestData{
         }
     }
 
-    	/**
-	 * Accumulates 2 {@link Measure}s, taking conflicts into account
-	 * @param measure1 first {@link Measure}
-	 * @param measure2 second {@link Measure}
-	 * @return resulting {@link Measure}
-	 */
+    /**
+     * print the result of a single measure to the command line
+     * @param measure 
+     * @param person
+     */
     public static void printResult(Measure measure, Person person){        
         int mostLikely = measure.getIndexOfMostLikelyEntry();
 
@@ -142,22 +143,15 @@ public class TestData{
         System.out.println();
     }
 
-    	/**
-	 * Accumulates 2 {@link Measure}s, taking conflicts into account
-	 * @param measure1 first {@link Measure}
-	 * @param measure2 second {@link Measure}
-	 * @return resulting {@link Measure}
-	 */
     public List<Person> getEvaluationData(){
         return _evaluationData;
     }
 
-    	/**
-	 * Accumulates 2 {@link Measure}s, taking conflicts into account
-	 * @param measure1 first {@link Measure}
-	 * @param measure2 second {@link Measure}
-	 * @return resulting {@link Measure}
-	 */
+    /**
+     * Parses a person from a csv string and adds it to the test data list
+     * @param person the csv string
+     * @param header the header of the csv table with the attribute names
+     */
     private void AddPerson(String person, String[] header){
         String[] personsAttributes = person.split(";");
         Person newPerson = new Person();
