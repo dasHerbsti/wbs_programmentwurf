@@ -49,7 +49,7 @@ public class TestData{
                     measure.addEntry(Arrays.asList( new Integer[]{0,0,1} ), (double)basicMasses[2]);                    
                 }                
 
-                System.out.println("measure: "+attributeValue+"\n" + measure.toString());
+                // System.out.println("measure: "+attributeValue+"\n" + measure.toString());
             }
             dempsterHandler.accumulateAllMeasures();   
             printResult(dempsterHandler.getFirstMeasure());         
@@ -57,28 +57,39 @@ public class TestData{
     }
 
     public static void printResult(Measure measure){
-        System.out.println("Accumulated measures result in: \n" + measure.toString());
+        System.out.println(measure.toString());
         
-        double beliefA = measure.calculateBelief(0);
-        double plausabilityA = measure.calculatePlausability(0);
-        double doubtA = measure.calculateDoubt(0);
+        int mostLikely = measure.getIndexOfMostLikelyEntry();
 
-        System.out.println("For Book A:");
-        System.out.println("Belief: \t" + beliefA +"\nPlausability: \t" + plausabilityA + "\nDoubt: \t\t" + doubtA);
+        System.out.println(mostLikely);
+        System.out.println();
+        System.out.println();
 
-        double beliefB = measure.calculateBelief(1);
-        double plausabilityB = measure.calculatePlausability(1);
-        double doubtB = measure.calculateDoubt(1);
-        
-        System.out.println("For Book B:");
-        System.out.println("Belief: \t" + beliefB +"\nPlausability: \t" + plausabilityB + "\nDoubt: \t\t" + doubtB);
 
-        double beliefC = measure.calculateBelief(2);
-        double plausabilityC = measure.calculatePlausability(2);
-        double doubtC = measure.calculateDoubt(2);
-        
-        System.out.println("For Book C:");
-        System.out.println("Belief: \t" + beliefC +"\nPlausability: \t" + plausabilityC + "\nDoubt: \t\t" + doubtC);
+
+
+        // System.out.println("Accumulated measures result in: \n" + measure.toString());
+        // 
+        // double beliefA = measure.calculateBelief(0);
+        // double plausabilityA = measure.calculatePlausability(0);
+        // double doubtA = measure.calculateDoubt(0);
+// 
+        // System.out.println("For Book A:");
+        // System.out.println("Belief: \t" + beliefA +"\nPlausability: \t" + plausabilityA + "\nDoubt: \t\t" + doubtA);
+// 
+        // double beliefB = measure.calculateBelief(1);
+        // double plausabilityB = measure.calculatePlausability(1);
+        // double doubtB = measure.calculateDoubt(1);
+        // 
+        // System.out.println("For Book B:");
+        // System.out.println("Belief: \t" + beliefB +"\nPlausability: \t" + plausabilityB + "\nDoubt: \t\t" + doubtB);
+// 
+        // double beliefC = measure.calculateBelief(2);
+        // double plausabilityC = measure.calculatePlausability(2);
+        // double doubtC = measure.calculateDoubt(2);
+        // 
+        // System.out.println("For Book C:");
+        // System.out.println("Belief: \t" + beliefC +"\nPlausability: \t" + plausabilityC + "\nDoubt: \t\t" + doubtC);
     }
 
     public List<Person> getEvaluationData(){

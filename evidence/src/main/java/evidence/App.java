@@ -10,10 +10,11 @@ public class App
     public static void main( String[] args )
     {
         DempsterHandler dempsterHandler = new DempsterHandler(3);
-        
-        DataSet baseDataSet = new DataSet("C:\\Users\\carin\\DHBW\\Semester_5\\WBS\\programmentwurf\\E001.csv");
 
-        TestData testData = new TestData(".\\.\\.\\.\\.\\testdata.csv", baseDataSet); 
+        DataSet baseDataSet = new DataSet(System.getProperty("user.dir")+"\\E002.csv");
+
+        TestData testData = new TestData(System.getProperty("user.dir")+"\\testdata.csv", baseDataSet);
+        
         testData.evaluate();
 
         // System.out.println("___________________________________________");

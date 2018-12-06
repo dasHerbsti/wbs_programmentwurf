@@ -83,4 +83,8 @@ public class DataSet{
             _attributes.add( new AttributeValue(attributes[i], header[i], _bookLookUp.get(attributes[8])));
         }
     }
+
+    public String getBookWithIndex(int key){
+        return _bookLookUp.get(key);
+    }
 }
