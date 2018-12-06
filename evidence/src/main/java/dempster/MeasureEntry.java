@@ -41,6 +41,9 @@ public class MeasureEntry{
 
 	/** sets the probability of the entry */
 	public void setProbability(double probability) {
+		if(probability<0){
+			probability=0.0;
+		}
 		this.probability = probability;
 	}
 

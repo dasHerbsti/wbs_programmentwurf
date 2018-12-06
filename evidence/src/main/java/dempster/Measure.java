@@ -1,11 +1,7 @@
 package dempster;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.xml.stream.events.EntityReference;
 
 /**
  * Class to represent a single measure within a Dempster-Schaefer calculation.
@@ -73,6 +69,7 @@ public class Measure{
 				entryWithHighest=entry;
 			}
 		}
+		// only works for singleton sets
 		return entryWithHighest.getValues().indexOf(1); 
 	}
 	
