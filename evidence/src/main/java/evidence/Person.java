@@ -10,7 +10,10 @@ public class Person {
 
     private Map<String, AttributeValue> _attributes;
     private int _number;
-    private String _result="";
+    private String _resultingBook="";
+    private double _belief;
+    private double _plausibility;
+    private double _doubt;
 
     public Person(){
         _attributes = new HashMap<String, AttributeValue>();
@@ -20,7 +23,7 @@ public class Person {
         if(attributeName.equals("Nr")){
             _number = new Integer(attributeValue);
         }
-        if(!_attributes.containsKey(attributeName)){
+        else if(!_attributes.containsKey(attributeName)){
             _attributes.put(attributeName, new AttributeValue(attributeValue, attributeName, null));
         }
     }
@@ -33,12 +36,27 @@ public class Person {
         return _number;
     }
 
-    public void setResult(String result){
-        _result=result;
+    public void setResult(String resultingBook, double belief, double plausibility, double doubt){
+        _resultingBook=resultingBook;
+        _belief=belief;
+        _plausibility=plausibility;
+        _doubt=doubt;
     }
 
-    public String getResult(){
-        return _result;
+    public String getResultingBook(){
+        return _resultingBook;
+    }
+
+    public double getBelief(){
+        return _belief;
+    }
+
+    public double getPlausibility(){
+        return _plausibility;
+    }
+
+    public double getDoubt(){
+        return _doubt;
     }
 
     public String getCSVString(){
@@ -49,9 +67,17 @@ public class Person {
             if(_attributes.containsKey(column)){
                 sb.append(_attributes.get(column).getValue());
             }
-            sb.append(SEMICOLON);
+            if(!column.equals("Nr")){
+                sb.append(SEMICOLON);
+            }
         }
-        sb.append(_result);
+        sb.append(_resultingBook);
+        sb.append(SEMICOLON);
+        sb.append(_belief);
+        sb.append(SEMICOLON);
+        sb.append(_plausibility);
+        sb.append(SEMICOLON);
+        sb.append(_doubt);
         return sb.toString();
     }
 }

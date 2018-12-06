@@ -15,12 +15,13 @@ import dempster.DempsterHandler;
 import dempster.Measure;
  
 public class TestData{
-    private static String[] _header;
+
+    private static String[] _csvTableHeader;
 
     private List<Person> _evaluationData;
     private DataSet _baseDataSet;
 
-    private static Map<Integer,String> _bookLookUp;
+    private static Map<Integer,String> _bookIndexToName;
 
     private String _resultFile;
     
@@ -29,10 +30,10 @@ public class TestData{
         _baseDataSet = baseData;
         _resultFile = resultFile;
 
-        _bookLookUp = new HashMap<>();
-        _bookLookUp.put(0, "Buch_A");
-        _bookLookUp.put(1, "Buch_B");
-        _bookLookUp.put(2, "Buch_C");
+        _bookIndexToName = new HashMap<>();
+        _bookIndexToName.put(0, "Buch_A");
+        _bookIndexToName.put(1, "Buch_B");
+        _bookIndexToName.put(2, "Buch_C");
 
         
         BufferedReader reader;
@@ -60,22 +61,27 @@ public class TestData{
         for (Person person : _evaluationData) {
             DempsterHandler dempsterHandler = new DempsterHandler(3);
             for (String attributeValue : person.getAttributeValues()){
-                Object[] basicMasses = _baseDataSet.getBasicMassToAttribute(attributeValue).toArray();
+                List<Double> basicMasses = _baseDataSet.getBasicMassToAttribute(attributeValue);
                 Measure measure = dempsterHandler.addMeasure();
-                if((double)basicMasses[0] > 0.0000001){
-                    measure.addEntry(Arrays.asList( new Integer[]{1,0,0} ), (double)basicMasses[0]);
+                if((double)basicMasses.get(0) > 0.0000001){
+                    measure.addEntry(Arrays.asList( new Integer[]{1,0,0} ), (double)basicMasses.get(0));
                 }
-                if((double)basicMasses[1] > 0.0000001){
-                    measure.addEntry(Arrays.asList( new Integer[]{0,1,0} ), (double)basicMasses[1]);
+                if((double)basicMasses.get(1) > 0.0000001){
+                    measure.addEntry(Arrays.asList( new Integer[]{0,1,0} ), (double)basicMasses.get(1));
                 }
-                if((double)basicMasses[2] > 0.0000001){
-                    measure.addEntry(Arrays.asList( new Integer[]{0,0,1} ), (double)basicMasses[2]);                    
+                if((double)basicMasses.get(2) > 0.0000001){
+                    measure.addEntry(Arrays.asList( new Integer[]{0,0,1} ), (double)basicMasses.get(2));                    
                 }                
 
-                // System.out.println("measure: "+attributeValue+"\n" + measure.toString());
+                System.out.println("measure: "+attributeValue+"\n" + measure.toString());
             }
             dempsterHandler.accumulateAllMeasures();   
-            person.setResult(_bookLookUp.get(dempsterHandler.getFirstMeasure().getIndexOfMostLikelyEntry()));
+
+            int indexOfMostLikelyEntry = dempsterHandler.getFirstMeasure().getIndexOfMostLikelyEntry();
+            person.setResult(_bookIndexToName.get(indexOfMostLikelyEntry),
+                             dempsterHandler.getFirstMeasure().calculateBelief(indexOfMostLikelyEntry),
+                             dempsterHandler.getFirstMeasure().calculatePlausability(indexOfMostLikelyEntry),
+                             dempsterHandler.getFirstMeasure().calculateDoubt(indexOfMostLikelyEntry));
             printResult(dempsterHandler.getFirstMeasure(), person);       
             saveResult();  
         }
@@ -84,6 +90,7 @@ public class TestData{
     private void saveResult(){
         try{
             List<String> lines = new ArrayList<String>();
+            lines.add(String.join(";", _header)+";Buch;Belief;Plausibility;Zweifel");
             for (Person person : _evaluationData) {
                 lines.add(person.getCSVString());
             }
@@ -107,36 +114,10 @@ public class TestData{
         double plausability = measure.calculatePlausability(0);
         double doubt = measure.calculateDoubt(0);
 
-        System.out.println("For "+_bookLookUp.get(mostLikely));
+        System.out.println("For "+_bookIndexToName.get(mostLikely));
         System.out.println("Belief: \t" + belief +"\nPlausability: \t" + plausability + "\nDoubt: \t\t" + doubt);
         System.out.println();
-
-
-
-
-        // System.out.println("Accumulated measures result in: \n" + measure.toString());
-        // 
-        // double beliefA = measure.calculateBelief(0);
-        // double plausabilityA = measure.calculatePlausability(0);
-        // double doubtA = measure.calculateDoubt(0);
-// 
-        // System.out.println("For Book A:");
-        // System.out.println("Belief: \t" + beliefA +"\nPlausability: \t" + plausabilityA + "\nDoubt: \t\t" + doubtA);
-// 
-        // double beliefB = measure.calculateBelief(1);
-        // double plausabilityB = measure.calculatePlausability(1);
-        // double doubtB = measure.calculateDoubt(1);
-        // 
-        // System.out.println("For Book B:");
-        // System.out.println("Belief: \t" + beliefB +"\nPlausability: \t" + plausabilityB + "\nDoubt: \t\t" + doubtB);
-// 
-        // double beliefC = measure.calculateBelief(2);
-        // double plausabilityC = measure.calculatePlausability(2);
-        // double doubtC = measure.calculateDoubt(2);
-        // 
-        // System.out.println("For Book C:");
-        // System.out.println("Belief: \t" + beliefC +"\nPlausability: \t" + plausabilityC + "\nDoubt: \t\t" + doubtC);
-    }
+}
 
     public List<Person> getEvaluationData(){
         return _evaluationData;

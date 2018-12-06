@@ -11,10 +11,10 @@ public class App
     {
         DempsterHandler dempsterHandler = new DempsterHandler(3);
 
-        DataSet baseDataSet = new DataSet(System.getProperty("user.dir")+"\\E004.csv");
+        DataSet baseDataSet = new DataSet(System.getProperty("user.dir")+"\\E001.csv");
 
-        TestData testData = new TestData(System.getProperty("user.dir")+"\\testdata4.csv",
-                                         System.getProperty("user.dir")+"\\resultdata4.csv",
+        TestData testData = new TestData(System.getProperty("user.dir")+"\\testdata1.csv",
+                                         System.getProperty("user.dir")+"\\resultdata1.csv",
                                          baseDataSet);
         
         testData.evaluate();
