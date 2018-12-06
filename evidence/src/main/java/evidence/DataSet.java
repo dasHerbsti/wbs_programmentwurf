@@ -11,17 +11,21 @@ public class DataSet{
     private String _path;
     private List<AttributeValue> _attributes;
     private Map<String, List<Double>> _basicMasses = new HashMap<String, List<Double>>();
-    private Map<String, Integer> _bookLookUp; 
+    private Map<String, Integer> _BookNameToIndex;
+    private int _numberOfTotalPersons;
+    private int _numberOfPersonsWithBookA;
+    private int _numberOfPersonsWithBookB;
+    private int _numberOfPersonsWithBookC;
 
     public DataSet(String sourcePath){
         _attributes = new ArrayList<AttributeValue>();
         _basicMasses = new HashMap<String, List<Double>>();
         _path = sourcePath;
-        _bookLookUp = new HashMap<String, Integer>();
+        _BookNameToIndex = new HashMap<String, Integer>();
 
-        _bookLookUp.put("Buch_A", 0);
-        _bookLookUp.put("Buch_B", 1);
-        _bookLookUp.put("Buch_C", 2);
+        _BookNameToIndex.put("Buch_A", 0);
+        _BookNameToIndex.put("Buch_B", 1);
+        _BookNameToIndex.put("Buch_C", 2);
 
         CalculateBasicMasses();
     }
@@ -48,8 +52,10 @@ public class DataSet{
             }
             reader.close();
 
+            
             List<AttributeValue> filteredAttributes = _attributes.stream().filter(x -> (!x.getAttributeName().equals("Nr"))).collect(Collectors.toList());
-
+            
+            CalculateTotalDistributionValues(filteredAttributes);
             for (AttributeValue attributeValue : filteredAttributes) {
                 if(_basicMasses.get(attributeValue.getValue()) == null){
                     _basicMasses.put(attributeValue.getValue(), CalculateSingleBasicMass(attributeValue.getValue()));
@@ -57,22 +63,29 @@ public class DataSet{
             }
             
         } catch (IOException e){
-           // System.out.printl("CVS inport broken. Exception: "+e);
+            System.out.println("CVS inport broken. Exception: "+e);
         }        
+    }
+
+    private void CalculateTotalDistributionValues(List<AttributeValue> attributeValues){
+        _numberOfTotalPersons=(int)attributeValues.stream().map(x->x.getPersonNumber()).distinct().count();
+        _numberOfPersonsWithBookA=(int)attributeValues.stream().filter(x->(x.getBookCode() == 0)).map(x->x.getPersonNumber()).distinct().count();
+        _numberOfPersonsWithBookB=(int)attributeValues.stream().filter(x->(x.getBookCode() == 1)).map(x->x.getPersonNumber()).distinct().count();
+        _numberOfPersonsWithBookC=(int)attributeValues.stream().filter(x->(x.getBookCode() == 2)).map(x->x.getPersonNumber()).distinct().count();
     }
 
     private List<Double> CalculateSingleBasicMass(String attributeName){
         List<Double> basicMasses = new ArrayList<Double>();       
-
-        int numberOfAttributeOccurenceBookA = (int) _attributes.stream().filter(x -> (x.getValue().equals(attributeName) && x.getBookCode().equals(_bookLookUp.get("Buch_A")))).count();
-        int numberOfAttributeOccurenceBookB = (int) _attributes.stream().filter(x -> (x.getValue().equals(attributeName) && x.getBookCode().equals(_bookLookUp.get("Buch_B")))).count();
-        int numberOfAttributeOccurenceBookC = (int) _attributes.stream().filter(x -> (x.getValue().equals(attributeName) && x.getBookCode().equals(_bookLookUp.get("Buch_C")))).count();
+ 
+        int numberOfAttributeOccurenceBookA = (int) _attributes.stream().filter(x -> (x.getValue().equals(attributeName) && _BookNameToIndex.get("Buch_A").equals(x.getBookCode()))).count();
+        int numberOfAttributeOccurenceBookB = (int) _attributes.stream().filter(x -> (x.getValue().equals(attributeName) && _BookNameToIndex.get("Buch_B").equals(x.getBookCode()))).count();
+        int numberOfAttributeOccurenceBookC = (int) _attributes.stream().filter(x -> (x.getValue().equals(attributeName) && _BookNameToIndex.get("Buch_C").equals(x.getBookCode()))).count();
 
         int numberOfTotalOccurences = numberOfAttributeOccurenceBookA+numberOfAttributeOccurenceBookB+numberOfAttributeOccurenceBookC;
 
-        basicMasses.add((((double)numberOfAttributeOccurenceBookA)/(26*numberOfTotalOccurences)));
-        basicMasses.add((((double)numberOfAttributeOccurenceBookB)/(20*numberOfTotalOccurences)));
-        basicMasses.add((((double)numberOfAttributeOccurenceBookC)/(54*numberOfTotalOccurences)));
+        basicMasses.add((((double)numberOfAttributeOccurenceBookA)/(numberOfTotalOccurences*_numberOfPersonsWithBookA)));
+        basicMasses.add((((double)numberOfAttributeOccurenceBookB)/(numberOfTotalOccurences*_numberOfPersonsWithBookB)));
+        basicMasses.add((((double)numberOfAttributeOccurenceBookC)/(numberOfTotalOccurences*_numberOfPersonsWithBookC)));
 
         basicMasses = normalize(basicMasses);
 
@@ -94,7 +107,7 @@ public class DataSet{
     private void AddPersonsAttributes(String personCsv, String[] header){
         String[] attributes = personCsv.split(";");
         for(int i=0; i<8; i++){
-            _attributes.add( new AttributeValue(attributes[i], header[i], _bookLookUp.get(attributes[8])));
+            _attributes.add( new AttributeValue(attributes[i], header[i], _BookNameToIndex.get(attributes[8]), attributes[0]));
         }
     }
 }

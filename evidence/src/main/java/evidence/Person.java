@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 public class Person {
     private final String SEMICOLON = ";";
+    private final String COLUMNNAMENUMBER = "Nr"; 
 
     private Map<String, AttributeValue> _attributes;
     private int _number;
@@ -20,11 +21,11 @@ public class Person {
     }
 
     public void addAttribute(String attributeName, String attributeValue){
-        if(attributeName.equals("Nr")){
+        if(attributeName.equals(COLUMNNAMENUMBER)){
             _number = new Integer(attributeValue);
         }
         else if(!_attributes.containsKey(attributeName)){
-            _attributes.put(attributeName, new AttributeValue(attributeValue, attributeName, null));
+            _attributes.put(attributeName, new AttributeValue(attributeValue, attributeName, -1, ""+_number));
         }
     }
 
@@ -63,11 +64,11 @@ public class Person {
         StringBuilder sb = new StringBuilder();
         sb.append(_number);
         sb.append(SEMICOLON);
-        for (String column : TestData.getHeader()) {
+        for (String column : TestData.getCsvTableHeader()) {
             if(_attributes.containsKey(column)){
                 sb.append(_attributes.get(column).getValue());
             }
-            if(!column.equals("Nr")){
+            if(!column.equals(COLUMNNAMENUMBER)){
                 sb.append(SEMICOLON);
             }
         }

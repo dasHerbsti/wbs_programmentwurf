@@ -14,7 +14,7 @@ import java.util.Map;
 import dempster.DempsterHandler;
 import dempster.Measure;
  
-public class TestData{
+public class TestData{    
 
     private static String[] _csvTableHeader;
 
@@ -30,12 +30,14 @@ public class TestData{
         _baseDataSet = baseData;
         _resultFile = resultFile;
 
+        // map book names to arry indices
         _bookIndexToName = new HashMap<>();
         _bookIndexToName.put(0, "Buch_A");
         _bookIndexToName.put(1, "Buch_B");
         _bookIndexToName.put(2, "Buch_C");
-
         
+
+        // read test data from file "testdata.csv" and create person instances
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(new File(evaluationDataFile)));
@@ -52,11 +54,20 @@ public class TestData{
             e.printStackTrace();
         }            
     }
-
-    public static String[] getHeader(){
+    /**
+	 * Gets the header of the csv test data table
+	 * @return the header of the csv test data table
+	 */
+    public static String[] getCsvTableHeader(){
         return _csvTableHeader;
     }
 
+    /**
+	* Evaluate the test data 
+	* @param measure1 first {@link Measure}
+	* @param measure2 second {@link Measure}
+	* @return resulting {@link Measure}
+	*/
     public void evaluate(){
         for (Person person : _evaluationData) {
             DempsterHandler dempsterHandler = new DempsterHandler(3);
@@ -87,6 +98,12 @@ public class TestData{
         }
     }
 
+    	/**
+	 * Accumulates 2 {@link Measure}s, taking conflicts into account
+	 * @param measure1 first {@link Measure}
+	 * @param measure2 second {@link Measure}
+	 * @return resulting {@link Measure}
+	 */
     private void saveResult(){
         try{
             List<String> lines = new ArrayList<String>();
@@ -103,6 +120,12 @@ public class TestData{
         }
     }
 
+    	/**
+	 * Accumulates 2 {@link Measure}s, taking conflicts into account
+	 * @param measure1 first {@link Measure}
+	 * @param measure2 second {@link Measure}
+	 * @return resulting {@link Measure}
+	 */
     public static void printResult(Measure measure, Person person){        
         int mostLikely = measure.getIndexOfMostLikelyEntry();
 
@@ -117,12 +140,24 @@ public class TestData{
         System.out.println("For "+_bookIndexToName.get(mostLikely));
         System.out.println("Belief: \t" + belief +"\nPlausability: \t" + plausability + "\nDoubt: \t\t" + doubt);
         System.out.println();
-}
+    }
 
+    	/**
+	 * Accumulates 2 {@link Measure}s, taking conflicts into account
+	 * @param measure1 first {@link Measure}
+	 * @param measure2 second {@link Measure}
+	 * @return resulting {@link Measure}
+	 */
     public List<Person> getEvaluationData(){
         return _evaluationData;
     }
 
+    	/**
+	 * Accumulates 2 {@link Measure}s, taking conflicts into account
+	 * @param measure1 first {@link Measure}
+	 * @param measure2 second {@link Measure}
+	 * @return resulting {@link Measure}
+	 */
     private void AddPerson(String person, String[] header){
         String[] personsAttributes = person.split(";");
         Person newPerson = new Person();
