@@ -64,6 +64,8 @@ public class DataSet{
     private List<Double> CalculateSingleBasicMass(String attributeName){
         List<Double> basicMasses = new ArrayList<Double>();
 
+        
+
         Integer numberOfAttributeOccurenceBookA = (int) _attributes.stream().filter(x -> (x.getValue().equals(attributeName) && x.getBookCode().equals(_bookLookUp.get("Buch_A")))).count();
         Integer numberOfAttributeOccurenceBookB = (int) _attributes.stream().filter(x -> (x.getValue().equals(attributeName) && x.getBookCode().equals(_bookLookUp.get("Buch_B")))).count();
         Integer numberOfAttributeOccurenceBookC = (int) _attributes.stream().filter(x -> (x.getValue().equals(attributeName) && x.getBookCode().equals(_bookLookUp.get("Buch_C")))).count();
@@ -82,9 +84,5 @@ public class DataSet{
         for(int i=0; i<8; i++){
             _attributes.add( new AttributeValue(attributes[i], header[i], _bookLookUp.get(attributes[8])));
         }
-    }
-
-    public String getBookWithIndex(int key){
-        return _bookLookUp.get(key);
     }
 }

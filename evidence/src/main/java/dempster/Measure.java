@@ -73,7 +73,7 @@ public class Measure{
 				entryWithHighest=entry;
 			}
 		}
-		return entries.indexOf(entryWithHighest);
+		return entryWithHighest.getValues().indexOf(1); 
 	}
 	
 	/**
