@@ -87,7 +87,7 @@ public class TestData{
                     measure.addEntry(Arrays.asList( new Integer[]{0,0,1} ), (double)basicMasses.get(2));                    
                 }                
 
-                System.out.println("measure: "+attributeValue+"\n" + measure.toString());
+                // System.out.println("measure: "+attributeValue+"\n" + measure.toString());
             }
             
             dempsterHandler.accumulateAllMeasures();   
@@ -109,7 +109,8 @@ public class TestData{
     private void saveResult(){
         try{
             List<String> lines = new ArrayList<String>();
-            lines.add(String.join(";", _csvTableHeader)+";Buch;Belief;Plausibility;Zweifel");
+            lines.add(String.join(";", _csvTableHeader)+";Buch");
+            // lines.add(String.join(";", _csvTableHeader)+";Buch;Belief;Plausibility;Zweifel");
             for (Person person : _evaluationData) {
                 lines.add(person.getCSVString());
             }
@@ -128,18 +129,15 @@ public class TestData{
      * @param person
      */
     public static void printResult(Measure measure, Person person){        
-        int mostLikely = measure.getIndexOfMostLikelyEntry();
+        System.out.println(person.toOutputString());        
+        
+        // System.out.println(measure);
+        // double belief = measure.calculateBelief(0);
+        // double plausability = measure.calculatePlausability(0);
+        // double doubt = measure.calculateDoubt(0);
+// 
+        // System.out.println("Belief: \t" + belief +"\nPlausability: \t" + plausability + "\nDoubt: \t\t" + doubt);
 
-        System.out.println(person.getCSVString());
-        System.out.println(mostLikely);
-        System.out.println(measure);
-
-        double belief = measure.calculateBelief(0);
-        double plausability = measure.calculatePlausability(0);
-        double doubt = measure.calculateDoubt(0);
-
-        System.out.println("For "+_bookIndexToName.get(mostLikely));
-        System.out.println("Belief: \t" + belief +"\nPlausability: \t" + plausability + "\nDoubt: \t\t" + doubt);
         System.out.println();
     }
 

@@ -21,13 +21,13 @@ public class DataSet{
     private Map<String, Integer> _BookNameToIndex;
 
     // count of persons
-    private int _numberOfTotalPersons;
+    private int _TotalPersons;
     // count of persons with book A
-    private int _numberOfPersonsWithBookA;
+    private int _PersonsWithBookA;
     // count of persons with book B
-    private int _numberOfPersonsWithBookB;
+    private int _PersonsWithBookB;
     // count of persons with book C
-    private int _numberOfPersonsWithBookC;
+    private int _PersonsWithBookC;
 
     
     
@@ -97,10 +97,10 @@ public class DataSet{
      * @param attributeValues the {@link AttributeValue}s from the data source
      */
     private void CalculateTotalDistributionValues(List<AttributeValue> attributeValues){
-        _numberOfTotalPersons=(int)attributeValues.stream().map(x->x.getPersonNumber()).distinct().count();
-        _numberOfPersonsWithBookA=(int)attributeValues.stream().filter(x->(x.getBookCode() == 0)).map(x->x.getPersonNumber()).distinct().count();
-        _numberOfPersonsWithBookB=(int)attributeValues.stream().filter(x->(x.getBookCode() == 1)).map(x->x.getPersonNumber()).distinct().count();
-        _numberOfPersonsWithBookC=(int)attributeValues.stream().filter(x->(x.getBookCode() == 2)).map(x->x.getPersonNumber()).distinct().count();
+        _TotalPersons=(int)attributeValues.stream().map(x->x.getPersonNumber()).distinct().count();
+        _PersonsWithBookA=(int)attributeValues.stream().filter(x->(x.getBookCode() == 0)).map(x->x.getPersonNumber()).distinct().count();
+        _PersonsWithBookB=(int)attributeValues.stream().filter(x->(x.getBookCode() == 1)).map(x->x.getPersonNumber()).distinct().count();
+        _PersonsWithBookC=(int)attributeValues.stream().filter(x->(x.getBookCode() == 2)).map(x->x.getPersonNumber()).distinct().count();
     }
 
     /**
@@ -111,15 +111,15 @@ public class DataSet{
     private List<Double> CalculateSingleBasicMass(String attributeName){
         List<Double> basicMasses = new ArrayList<Double>();       
  
-        int numberOfAttributeOccurenceBookA = (int) _attributes.stream().filter(x -> (x.getValue().equals(attributeName) && _BookNameToIndex.get("Buch_A").equals(x.getBookCode()))).count();
-        int numberOfAttributeOccurenceBookB = (int) _attributes.stream().filter(x -> (x.getValue().equals(attributeName) && _BookNameToIndex.get("Buch_B").equals(x.getBookCode()))).count();
-        int numberOfAttributeOccurenceBookC = (int) _attributes.stream().filter(x -> (x.getValue().equals(attributeName) && _BookNameToIndex.get("Buch_C").equals(x.getBookCode()))).count();
+        int AttributeOccurenceBookA = (int) _attributes.stream().filter(x -> (x.getValue().equals(attributeName) && _BookNameToIndex.get("Buch_A").equals(x.getBookCode()))).count();
+        int AttributeOccurenceBookB = (int) _attributes.stream().filter(x -> (x.getValue().equals(attributeName) && _BookNameToIndex.get("Buch_B").equals(x.getBookCode()))).count();
+        int AttributeOccurenceBookC = (int) _attributes.stream().filter(x -> (x.getValue().equals(attributeName) && _BookNameToIndex.get("Buch_C").equals(x.getBookCode()))).count();
 
-        int numberOfTotalOccurences = numberOfAttributeOccurenceBookA+numberOfAttributeOccurenceBookB+numberOfAttributeOccurenceBookC;
+        int TotalOccurences = AttributeOccurenceBookA+AttributeOccurenceBookB+AttributeOccurenceBookC;
 
-        basicMasses.add((((double)numberOfAttributeOccurenceBookA/numberOfTotalOccurences)*(_numberOfTotalPersons/_numberOfPersonsWithBookA)));
-        basicMasses.add((((double)numberOfAttributeOccurenceBookB/numberOfTotalOccurences)*(_numberOfTotalPersons/_numberOfPersonsWithBookB)));
-        basicMasses.add((((double)numberOfAttributeOccurenceBookC/numberOfTotalOccurences)*(_numberOfTotalPersons/_numberOfPersonsWithBookC)));
+        basicMasses.add((((double)AttributeOccurenceBookA*_TotalPersons)/(TotalOccurences*_PersonsWithBookA)));
+        basicMasses.add((((double)AttributeOccurenceBookB*_TotalPersons)/(TotalOccurences*_PersonsWithBookB)));
+        basicMasses.add((((double)AttributeOccurenceBookC*_TotalPersons)/(TotalOccurences*_PersonsWithBookC)));
 
         basicMasses = normalize(basicMasses);
 

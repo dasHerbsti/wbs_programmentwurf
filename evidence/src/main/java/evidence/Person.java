@@ -15,6 +15,7 @@ public class Person {
     private double _belief;
     private double _plausibility;
     private double _doubt;
+    private boolean _resultSet=false;
 
     public Person(){
         _attributes = new HashMap<String, AttributeValue>();
@@ -47,6 +48,7 @@ public class Person {
         _belief=belief;
         _plausibility=plausibility;
         _doubt=doubt;
+        _resultSet=true;
     }
 
     public String getResultingBook(){
@@ -82,12 +84,32 @@ public class Person {
             }
         }
         sb.append(_resultingBook);
-        sb.append(SEMICOLON);
-        sb.append(_belief);
-        sb.append(SEMICOLON);
-        sb.append(_plausibility);
-        sb.append(SEMICOLON);
-        sb.append(_doubt);
+        // sb.append(SEMICOLON);
+        // sb.append(_belief);
+        // sb.append(SEMICOLON);
+        // sb.append(_plausibility);
+        // sb.append(SEMICOLON);
+        // sb.append(_doubt);
+        return sb.toString();
+    }
+
+    /**
+     * Builds an output string for the console.
+     * @return
+     */
+    public String toOutputString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("Der Person Nr. "+this._number+" mit den Eigenschaften");
+        if(_resultSet){
+            for (AttributeValue attribute : _attributes.values()) {
+                sb.append("\n\t"+attribute.getAttributeName()+": ");
+                sb.append(attribute.getValue()+", ");
+            }
+            sb.delete(sb.length()-2, sb.length());
+            sb.append("\nwird folgendes Buch vorgeschlagen: "+this._resultingBook);
+        } else{
+            sb.append("\nwurde noch kein Buch vorgeschlagen: "+this._resultingBook);            
+        }
         return sb.toString();
     }
 }
