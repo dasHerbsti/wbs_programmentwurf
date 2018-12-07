@@ -1,21 +1,19 @@
 package evidence;
 
-import java.util.Arrays;
-
-import dempster.DempsterHandler;
-import dempster.Measure;
-
 public class App 
 {      
     public static void main( String[] args )
     {
-        DempsterHandler dempsterHandler = new DempsterHandler(3);
-
-        DataSet baseDataSet = new DataSet(System.getProperty("user.dir")+"\\knowledgeBase.csv");
-
-        TestData testData = new TestData(System.getProperty("user.dir")+"\\testdata.csv",
-                                         System.getProperty("user.dir")+"\\resultdata.csv",
-                                         baseDataSet);        
-        testData.evaluate();
+        try{
+            DataSet baseDataSet = new DataSet("knowledgeBase.csv");
+            
+            TestData testData = new TestData("testdata.csv","resultdata.csv",
+            baseDataSet);        
+            testData.evaluate();
+        }
+        catch(Exception e){
+            System.out.println("Application broken. An error occured while executing the main process. Exception: ");
+            e.printStackTrace();
+        }
     }
 }

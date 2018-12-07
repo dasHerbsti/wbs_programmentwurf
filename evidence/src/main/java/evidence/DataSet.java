@@ -8,6 +8,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
  
 public class DataSet{
+    // Factor to weigh uncertainty 
+    // (1 - factor) is the basic mass of omega
+    private final double NORMALIZE_FACTOR = 1.0; 
+
     // path of the knowledge base file
     private String _path;
 
@@ -140,7 +144,7 @@ public class DataSet{
         }
         // calculate the new basic masses by dividing with the sum
         for (Double basisMass : basicMasses) {
-            newBasicMasses.add((basisMass/sum));
+            newBasicMasses.add(((basisMass/sum)*NORMALIZE_FACTOR));
         }
         return newBasicMasses;
     }

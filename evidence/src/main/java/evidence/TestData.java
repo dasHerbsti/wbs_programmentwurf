@@ -55,7 +55,8 @@ public class TestData{
                 AddPerson(person, _csvTableHeader);
             }
             reader.close();
-        } catch (Exception e) {            
+        } catch (Exception e) {   
+            System.out.println("A problem occured at trying to import the test data from testdata.csv. Exception: ");         
             e.printStackTrace();
         }            
     }
@@ -118,7 +119,7 @@ public class TestData{
             Files.write(file, lines, Charset.forName("UTF-8"));
 
         }catch(Exception e){
-            System.out.println("Exception eccured when creating result file.");
+            System.out.println("A problem occured at trying to the result in the resultdata.csv. Exception: "+e);
             e.printStackTrace();
         }
     }
@@ -135,7 +136,7 @@ public class TestData{
         // double belief = measure.calculateBelief(0);
         // double plausability = measure.calculatePlausability(0);
         // double doubt = measure.calculateDoubt(0);
-// 
+        // 
         // System.out.println("Belief: \t" + belief +"\nPlausability: \t" + plausability + "\nDoubt: \t\t" + doubt);
 
         System.out.println();
